@@ -446,12 +446,13 @@ export function AddTransactionDialog({ accounts, categories, templates = [], chi
                                             {date ? format(date, "P") : <span>Pick a date</span>}
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
+                                    <PopoverContent className="w-auto p-4 bg-white rounded-3xl shadow-xl border-none" align="start">
                                         <Calendar
                                             mode="single"
                                             selected={date}
                                             onSelect={setDate}
                                             initialFocus
+                                            className="rounded-xl border border-slate-100"
                                         />
                                     </PopoverContent>
                                 </Popover>
