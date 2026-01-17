@@ -85,7 +85,7 @@ export function TransactionHistory({ transactions, onDuplicate, className }: { t
 
 
     return (
-        <Card className={`border-0 shadow-lg rounded-3xl bg-white/60 backdrop-blur-xl flex flex-col h-[400px] overflow-hidden ${className}`}>
+        <Card className={`border-0 shadow-lg rounded-3xl bg-white/60 backdrop-blur-xl flex flex-col h-[500px] overflow-hidden ${className}`}>
             <CardHeader className="pb-2 pt-4 px-4 space-y-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
