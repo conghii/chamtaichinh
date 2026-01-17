@@ -96,23 +96,23 @@ export function TransactionHistory({ transactions, onDuplicate, className }: { t
                 </div>
 
                 {/* Filters */}
-                <div className="flex flex-col md:flex-row gap-2">
-                    <div className="grid grid-cols-2 gap-2 flex-1">
-                        <div className="relative">
+                <div className="flex flex-col gap-3">
+                    <div className="flex gap-2 w-full">
+                        <div className="flex-1">
                             <Input
                                 type="month"
                                 value={selectedMonth}
                                 onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="text-xs h-9 bg-white border-slate-200 w-full"
+                                className="text-xs h-10 bg-white border-slate-200 w-full shadow-sm"
                             />
                         </div>
-                        <div className="w-full">
+                        <div className="flex-1">
                             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                <SelectTrigger className="h-9 text-xs bg-white border-slate-200">
+                                <SelectTrigger className="h-10 text-xs bg-white border-slate-200 shadow-sm">
                                     <SelectValue placeholder="Danh mục" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="ALL">Tất cả</SelectItem>
+                                    <SelectItem value="ALL">Tất cả danh mục</SelectItem>
                                     {uniqueCategories.map(c => (
                                         <SelectItem key={c} value={c}>{c}</SelectItem>
                                     ))}
@@ -121,17 +121,15 @@ export function TransactionHistory({ transactions, onDuplicate, className }: { t
                         </div>
                     </div>
 
-                    <div className="relative flex-[1.5]">
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-                            <Input
-                                type="text"
-                                placeholder="Tìm kiếm..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-9 text-xs h-9 bg-white border-slate-200"
-                            />
-                        </div>
+                    <div className="relative w-full">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input
+                            type="text"
+                            placeholder="Tìm kiếm giao dịch..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9 text-xs h-10 bg-white border-slate-200 shadow-sm w-full"
+                        />
                     </div>
                 </div>
 
@@ -166,53 +164,56 @@ export function TransactionHistory({ transactions, onDuplicate, className }: { t
                         </p>
                     ) : (
                         filteredTransactions.map((t) => (
-                            <div key={t.id} className="flex items-start justify-between p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all group border border-slate-100/50 shadow-sm mb-2 last:mb-0">
-                                <div className="flex items-start gap-3 overflow-hidden flex-1">
+                            <div key={t.id} className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all group shadow-sm mb-2 last:mb-0 border border-transparent hover:border-slate-100">
+                                <div className="flex items-center gap-3 overflow-hidden flex-1">
                                     <div className={cn(
-                                        "w-10 h-10 flex items-center justify-center rounded-xl shrink-0 transition-colors shadow-sm mt-0.5",
-                                        t.transaction_type === 'INCOME' ? "bg-emerald-100 text-emerald-600" :
-                                            t.transaction_type === 'EXPENSE' ? "bg-rose-100 text-rose-600" : "bg-blue-100 text-blue-600"
+                                        "w-11 h-11 flex items-center justify-center rounded-2xl shrink-0 transition-colors shadow-sm",
+                                        t.transaction_type === 'INCOME' ? "bg-emerald-50 text-emerald-600" :
+                                            t.transaction_type === 'EXPENSE' ? "bg-rose-50 text-rose-600" : "bg-blue-50 text-blue-600"
                                     )}>
                                         {getCategoryIcon(t.category_name, t.transaction_type)}
                                     </div>
                                     <div className="flex-1 flex flex-col justify-center gap-0.5 min-w-0">
-                                        <div className="flex items-center pt-0.5">
-                                            <p className="font-bold text-slate-800 text-sm truncate leading-tight">{t.category_name}</p>
+                                        <div className="flex items-center">
+                                            <p className="font-semibold text-slate-700 text-sm truncate">{t.category_name}</p>
                                         </div>
 
-                                        {t.note && (
+                                        {t.note ? (
                                             <p className="text-xs text-slate-500 truncate w-full opacity-80">
                                                 {t.note}
                                             </p>
+                                        ) : (
+                                            <p className="text-[10px] text-slate-400 opacity-60 italic">Không có ghi chú</p>
                                         )}
 
-                                        <div className="flex items-center text-[10px] text-slate-400 gap-1 mt-0.5 opacity-70">
-                                            <span className="font-medium text-slate-500 shrink-0">{t.account_name.replace('Tra từ ', '').replace('Nạp vào ', '')}</span>
-                                            <span className="text-slate-300">•</span>
-                                            <span className="truncate">{new Date(t.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}</span>
+                                        <div className="flex items-center text-[10px] text-slate-400 gap-1.5 mt-0.5">
+                                            <span className="font-medium text-slate-500 shrink-0 bg-slate-100 px-1.5 py-0.5 rounded-md text-[9px] uppercase tracking-wide">
+                                                {new Date(t.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+                                            </span>
+                                            <span className="truncate">{t.account_name.replace('Tra từ ', '').replace('Nạp vào ', '')}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end pl-3 mt-0.5 gap-1">
+                                <div className="flex flex-col items-end pl-2 gap-1">
                                     <span className={cn(
-                                        "font-bold text-sm md:text-base whitespace-nowrap",
+                                        "font-bold text-sm md:text-base whitespace-nowrap tracking-tight",
                                         t.transaction_type === 'INCOME' ? "text-emerald-600" : "text-rose-600"
                                     )}>
-                                        <PriceDisplay value={t.amount} showSign />
+                                        {t.transaction_type === 'EXPENSE' ? '-' : '+'}<PriceDisplay value={t.amount} />
                                     </span>
                                     <span className={cn(
-                                        "text-[9px] px-2 py-0.5 rounded-[6px] font-bold uppercase tracking-wider border",
+                                        "text-[8px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider",
                                         t.owner === 'PERSONAL'
-                                            ? "bg-purple-50 text-purple-600 border-purple-100"
-                                            : "bg-slate-50 text-slate-500 border-slate-100"
+                                            ? "bg-purple-50 text-purple-600"
+                                            : "bg-blue-50 text-blue-600"
                                     )}>
-                                        {t.owner === 'PERSONAL' ? 'CN' : 'CTY'}
+                                        {t.owner === 'PERSONAL' ? 'Cá nhân' : 'Công ty'}
                                     </span>
                                     {onDuplicate && (
                                         <button
                                             onClick={() => onDuplicate(t)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 bg-slate-100/90 hover:bg-white text-slate-500 hover:text-indigo-600 rounded-full shadow-sm transition-all z-20"
-                                            title="Sao chép giao dịch này"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 bg-slate-800 text-white rounded-xl shadow-lg transition-all z-20 hover:scale-105 active:scale-95"
+                                            title="Sao chép"
                                         >
                                             <Copy className="w-4 h-4" />
                                         </button>
