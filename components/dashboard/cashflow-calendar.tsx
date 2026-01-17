@@ -81,25 +81,25 @@ export function CashFlowCalendar({ recurring }: { recurring: RecurringTransactio
 
                             return (
                                 <div key={i} className={cn(
-                                    "aspect-square rounded-xl flex flex-col items-center justify-start pt-2 relative group border transition-all cursor-pointer min-h-[60px]",
-                                    isSelected ? "bg-indigo-50 border-indigo-200" : "bg-white border-slate-100 hover:border-indigo-200"
+                                    "aspect-[4/5] md:aspect-square rounded-xl flex flex-col items-center justify-start pt-2 relative group transition-all cursor-pointer min-h-[50px] md:min-h-[60px]",
+                                    isSelected ? "bg-indigo-600 text-white shadow-md shadow-indigo-200" : "bg-transparent hover:bg-slate-50 text-slate-700"
                                 )}>
-                                    <span className={cn("text-xs font-bold mb-1", isSelected ? "text-indigo-600" : "text-slate-600")}>
+                                    <span className={cn("text-xs font-bold mb-1", isSelected ? "text-white" : "text-slate-700")}>
                                         {day.getDate()}
                                     </span>
 
-                                    {/* Indicators */}
-                                    <div className="flex flex-col gap-0.5 w-full px-1">
-                                        {hasIncome && <div className="h-1 w-full bg-emerald-400 rounded-full" />}
-                                        {hasExpense && <div className="h-1 w-full bg-rose-400 rounded-full" />}
+                                    {/* Indicators (Dots) */}
+                                    <div className="flex gap-1 mt-0.5">
+                                        {hasIncome && <div className={cn("h-1.5 w-1.5 rounded-full", isSelected ? "bg-emerald-300" : "bg-emerald-500")} />}
+                                        {hasExpense && <div className={cn("h-1.5 w-1.5 rounded-full", isSelected ? "bg-rose-300" : "bg-rose-500")} />}
                                     </div>
 
                                     {/* Hover Tooltip */}
                                     {events.length > 0 && (
-                                        <div className="absolute top-full mt-1 z-50 hidden group-hover:block w-32 bg-slate-900 text-white text-[10px] p-2 rounded-lg shadow-xl">
+                                        <div className="absolute top-full mt-1 z-50 hidden group-hover:block w-32 bg-slate-900 text-white text-[10px] p-2 rounded-lg shadow-xl pointer-events-none">
                                             {events.map((e, idx) => (
                                                 <div key={idx} className="flex justify-between mb-1">
-                                                    <span className="truncate w-16">{e.description}</span>
+                                                    <span className="truncate w-16 opacity-90">{e.description}</span>
                                                     <span className={e.type === 'INCOME' ? 'text-emerald-400' : 'text-rose-400'}>
                                                         {new Intl.NumberFormat('vi-VN', { notation: "compact" }).format(e.amount)}
                                                     </span>
@@ -126,17 +126,17 @@ export function CashFlowCalendar({ recurring }: { recurring: RecurringTransactio
                             <p className="text-center text-slate-400 text-sm py-8">Chưa có dữ liệu</p>
                         )}
                         {recurring.sort((a, b) => a.day_of_month - b.day_of_month).map((r) => (
-                            <div key={r.id} className="flex items-center justify-between group p-2 hover:bg-slate-50 rounded-xl transition-colors">
-                                <div className="flex items-center gap-3">
+                            <div key={r.id} className="flex items-center justify-between group p-3 hover:bg-slate-50/80 rounded-2xl transition-all border border-transparent hover:border-slate-100">
+                                <div className="flex items-center gap-4">
                                     <div className={cn(
-                                        "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-sm",
+                                        "w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-sm shadow-sm transition-transform group-hover:scale-105",
                                         r.type === 'INCOME' ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
                                     )}>
                                         {r.day_of_month}
                                     </div>
                                     <div>
                                         <p className="font-bold text-sm text-slate-700">{r.description}</p>
-                                        <p className={cn("text-xs font-medium", r.type === 'INCOME' ? "text-emerald-500" : "text-rose-500")}>
+                                        <p className={cn("text-xs font-semibold", r.type === 'INCOME' ? "text-emerald-600" : "text-rose-600")}>
                                             {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(r.amount)}
                                         </p>
                                     </div>
@@ -144,7 +144,7 @@ export function CashFlowCalendar({ recurring }: { recurring: RecurringTransactio
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50"
+                                    className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
                                     onClick={() => handleDelete(r.id)}
                                 >
                                     <Trash2 className="w-4 h-4" />
