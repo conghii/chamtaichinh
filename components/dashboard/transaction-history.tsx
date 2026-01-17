@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { PriceDisplay } from "@/components/ui/price-display"
 import { Search, Copy } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 interface Transaction {
     id: string
@@ -157,70 +158,97 @@ export function TransactionHistory({ transactions, onDuplicate, className }: { t
             </CardHeader>
 
             <CardContent className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-                <div className="space-y-2 p-1">
+                <div className="space-y-4 p-1">
                     {filteredTransactions.length === 0 ? (
                         <p className="text-center text-slate-500 py-8 text-sm">
                             Không tìm thấy giao dịch nào
                         </p>
                     ) : (
-                        filteredTransactions.map((t) => (
-                            <div key={t.id} className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all group shadow-sm mb-2 last:mb-0 border border-transparent hover:border-slate-100">
-                                <div className="flex items-center gap-3 overflow-hidden flex-1">
-                                    <div className={cn(
-                                        "w-11 h-11 flex items-center justify-center rounded-2xl shrink-0 transition-colors shadow-sm",
-                                        t.transaction_type === 'INCOME' ? "bg-emerald-50 text-emerald-600" :
-                                            t.transaction_type === 'EXPENSE' ? "bg-rose-50 text-rose-600" : "bg-blue-50 text-blue-600"
-                                    )}>
-                                        {getCategoryIcon(t.category_name, t.transaction_type)}
-                                    </div>
-                                    <div className="flex-1 flex flex-col justify-center gap-0.5 min-w-0">
-                                        <div className="flex items-center">
-                                            <p className="font-semibold text-slate-700 text-sm truncate">{t.category_name}</p>
-                                        </div>
-
-                                        {t.note ? (
-                                            <p className="text-xs text-slate-500 truncate w-full opacity-80">
-                                                {t.note}
-                                            </p>
-                                        ) : (
-                                            <p className="text-[10px] text-slate-400 opacity-60 italic">Không có ghi chú</p>
-                                        )}
-
-                                        <div className="flex items-center text-[10px] text-slate-400 gap-1.5 mt-0.5">
-                                            <span className="font-medium text-slate-500 shrink-0 bg-slate-100 px-1.5 py-0.5 rounded-md text-[9px] uppercase tracking-wide">
-                                                {new Date(t.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
-                                            </span>
-                                            <span className="truncate">{t.account_name.replace('Tra từ ', '').replace('Nạp vào ', '')}</span>
-                                        </div>
+                        Object.entries(
+                            filteredTransactions.reduce((groups, t) => {
+                                const date = new Date(t.date).toLocaleDateString('en-CA') // YYYY-MM-DD
+                                if (!groups[date]) groups[date] = []
+                                groups[date].push(t)
+                                return groups
+                            }, {} as Record<string, Transaction[]>)
+                        )
+                            .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+                            .map(([date, transactions]) => (
+                                <div key={date} className="space-y-2">
+                                    <h3 className="text-xs font-semibold text-slate-500 px-2 sticky top-0 bg-white/95 backdrop-blur-sm py-1 z-10 w-fit rounded-lg shadow-sm border border-slate-100/50">
+                                        {new Date(date).toLocaleDateString('vi-VN', {
+                                            weekday: 'short',
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })}
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {transactions.map((t) => (
+                                            <div key={t.id} className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all group shadow-sm border border-transparent hover:border-slate-100">
+                                                <div className="flex items-center gap-3 overflow-hidden flex-1">
+                                                    <div className={cn(
+                                                        "w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-2xl shrink-0 transition-colors shadow-sm",
+                                                        t.transaction_type === 'INCOME' ? "bg-emerald-50 text-emerald-600" :
+                                                            t.transaction_type === 'EXPENSE' ? "bg-rose-50 text-rose-600" : "bg-blue-50 text-blue-600"
+                                                    )}>
+                                                        {getCategoryIcon(t.category_name, t.transaction_type)}
+                                                    </div>
+                                                    <div className="flex-1 flex flex-col justify-center min-w-0 gap-0.5">
+                                                        <div className="flex items-center justify-between pr-2">
+                                                            <p className="font-bold text-slate-700 text-sm truncate">{t.category_name}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            {t.note ? (
+                                                                <p className="text-xs text-slate-500 truncate max-w-[120px] sm:max-w-[200px] opacity-90">
+                                                                    {t.note}
+                                                                </p>
+                                                            ) : (
+                                                                <span className="text-[10px] text-slate-400 italic">Không ghi chú</span>
+                                                            )}
+                                                            <span className="text-[10px] text-slate-300">•</span>
+                                                            <span className="text-[10px] text-slate-400 truncate max-w-[80px]">
+                                                                {t.account_name.replace('Tra từ ', '').replace('Nạp vào ', '')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end pl-2 gap-0.5">
+                                                    <span className={cn(
+                                                        "font-bold text-sm md:text-base whitespace-nowrap tracking-tight",
+                                                        t.transaction_type === 'INCOME' ? "text-emerald-600" : "text-rose-600"
+                                                    )}>
+                                                        {t.transaction_type === 'EXPENSE' ? '-' : '+'}<PriceDisplay value={t.amount} />
+                                                    </span>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className={cn(
+                                                            "text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider border",
+                                                            t.owner === 'PERSONAL'
+                                                                ? "bg-purple-50 text-purple-600 border-purple-100"
+                                                                : "bg-blue-50 text-blue-600 border-blue-100"
+                                                        )}>
+                                                            {t.owner === 'PERSONAL' ? 'CN' : 'CTY'}
+                                                        </span>
+                                                        {onDuplicate && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-6 w-6 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation()
+                                                                    onDuplicate(t)
+                                                                }}
+                                                            >
+                                                                <Copy className="w-3 h-3" />
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end pl-2 gap-1">
-                                    <span className={cn(
-                                        "font-bold text-sm md:text-base whitespace-nowrap tracking-tight",
-                                        t.transaction_type === 'INCOME' ? "text-emerald-600" : "text-rose-600"
-                                    )}>
-                                        {t.transaction_type === 'EXPENSE' ? '-' : '+'}<PriceDisplay value={t.amount} />
-                                    </span>
-                                    <span className={cn(
-                                        "text-[8px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider",
-                                        t.owner === 'PERSONAL'
-                                            ? "bg-purple-50 text-purple-600"
-                                            : "bg-blue-50 text-blue-600"
-                                    )}>
-                                        {t.owner === 'PERSONAL' ? 'Cá nhân' : 'Công ty'}
-                                    </span>
-                                    {onDuplicate && (
-                                        <button
-                                            onClick={() => onDuplicate(t)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 bg-slate-800 text-white rounded-xl shadow-lg transition-all z-20 hover:scale-105 active:scale-95"
-                                            title="Sao chép"
-                                        >
-                                            <Copy className="w-4 h-4" />
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        ))
+                            ))
                     )}
                 </div>
             </CardContent>
