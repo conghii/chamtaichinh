@@ -47,30 +47,34 @@ function Calendar({
           defaultClassNames.months
         ),
         month: cn("space-y-4 w-full", defaultClassNames.month),
-        caption: cn("flex justify-center pt-1 relative items-center", defaultClassNames.caption),
+        month_caption: cn("flex justify-center pt-1 relative items-center", defaultClassNames.month_caption),
         caption_label: cn("text-sm font-medium", defaultClassNames.caption_label),
         nav: cn("space-x-1 flex items-center", defaultClassNames.nav),
-        nav_button: cn(
+        button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1",
+          defaultClassNames.button_previous
         ),
-        nav_button_previous: cn("absolute left-1", defaultClassNames.nav_button_previous),
-        nav_button_next: cn("absolute right-1", defaultClassNames.nav_button_next),
-        table: cn("w-full border-collapse space-y-1", defaultClassNames.table),
-        head_row: cn("flex w-full justify-between", defaultClassNames.head_row),
-        head_cell: cn(
+        button_next: cn(
+          buttonVariants({ variant: "outline" }),
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1",
+          defaultClassNames.button_next
+        ),
+        month_grid: cn("w-full border-collapse space-y-1", defaultClassNames.month_grid),
+        weekdays: cn("flex w-full justify-between", defaultClassNames.weekdays),
+        weekday: cn(
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-          defaultClassNames.head_cell
+          defaultClassNames.weekday
         ),
-        row: cn("flex w-full mt-2 justify-between", defaultClassNames.row),
-        cell: cn(
-          "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-          defaultClassNames.cell
-        ),
+        week: cn("flex w-full mt-2 justify-between", defaultClassNames.week),
         day: cn(
+          "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          defaultClassNames.day
+        ),
+        day_button: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-          defaultClassNames.day
+          defaultClassNames.day_button
         ),
         range_start: cn(
           "bg-accent rounded-l-md",
